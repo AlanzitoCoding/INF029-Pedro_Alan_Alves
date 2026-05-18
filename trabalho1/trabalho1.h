@@ -40,6 +40,9 @@ typedef struct Qtd
 
 } DiasMesesAnos;
 
+int charInString(char *s, char c, int isCaseSensitive);
+int convertStringInIntArr(char *s, int v[50]);
+int findSubString(char *mainString, char *subString, int pos[30]);
 int somar(int x, int y); //função utilizada para testes
 int fatorial(int x); //função utilizada para testes
 int q1(char data[]);
