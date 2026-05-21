@@ -253,22 +253,22 @@ int q3(char *texto, char c, int isCaseSensitive)
 
  */
 
-int convertStringInIntArr(char *s, int v[50]){
-    int arrSize = 0, index = 0;
+int convertStringInIntArr(char s[250], int v[250]){
+    int arrSize = 0;
     
     for(int i = 0; i < strlen(s); i++){
         if(s[i] != -61){
-            sscanf(s, "%d", v[arrSize]);
+            v[arrSize] = s[i];
             arrSize++;
         }
     }
 
-    return arrSize + 1;
+    return arrSize;
 }
 
- int findSubString(char *mainString, char *subString, int pos[30]){
+ int findSubString(char mainString[250], char subString[250], int pos[30]){
     int occ = 0, l = 0, substringSize = strlen(subString);
-    int msIntArr[50], ssIntArr[50], msArrSize, ssArrSize;
+    int msIntArr[250], ssIntArr[250], msArrSize, ssArrSize;
 
     msArrSize = convertStringInIntArr(mainString, msIntArr);
     ssArrSize = convertStringInIntArr(subString, ssIntArr);
@@ -289,7 +289,7 @@ int convertStringInIntArr(char *s, int v[50]){
                 pos[l] = i + 1;
                 pos[l+1] = i + substringSize;
                 l = l + 2;
-                i = i + substringSize;
+                i = i + substringSize - 1;
             }
         }
     }
@@ -297,7 +297,7 @@ int convertStringInIntArr(char *s, int v[50]){
     return occ;
 }
 
-int q4(char *strTexto, char *strBusca, int posicoes[30])
+int q4(char strTexto[250], char strBusca[250], int posicoes[30])
 {
     int qtdOcorrencias = findSubString(strTexto, strBusca, posicoes);
 
