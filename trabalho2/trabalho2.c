@@ -230,16 +230,23 @@ Retorno (int)
     SEM_ESTRUTURA_AUXILIAR - Não tem estrutura auxiliar
     POSICAO_INVALIDA - Posição inválida para estrutura auxiliar
 */
+
+int preencherVetor(int vet[], int posicao, int i){
+    No * n = vetorPrincipal[posicao-1]->inicio;
+
+    for(i; n != NULL; n = n->prox, i++){
+        vet[i] = n->conteudo;
+    }
+
+    return i;
+}
+
 int getDadosEstruturaAuxiliar(int posicao, int vetorAux[])
 {
     int v = validacao(posicao);
     if(v != SUCESSO){ return v; }
-
-    No * n = vetorPrincipal[posicao-1]->inicio;
     
-    for(int i = 0; n != NULL; n = n->prox, i++){
-        vetorAux[i] = n->conteudo;
-    }
+    preencherVetor(vetorAux, posicao, 0);
 
     return SUCESSO;
 }
@@ -265,7 +272,7 @@ Rertono (int)
 */
 int getDadosOrdenadosEstruturaAuxiliar(int posicao, int vetorAux[])
 {
-    int v = getDadosEstruturaAuxiliar(posicao, vetorAux); 
+    int v = getDadosEstruturaAuxiliar(posicao, vetorAux, 0); 
     if(v != SUCESSO){ return v; }
 
     ordenarVetor(vetorAux, vetorPrincipal[posicao-1]->qntEl);
@@ -283,8 +290,17 @@ Rertono (int)
 */
 int getDadosDeTodasEstruturasAuxiliares(int vetorAux[])
 {
-    int retorno = 0;
-    return retorno;
+    int checkAllNull = 0, pos = 0;
+
+    for(int i = 0; i < 10; i++){
+        if(vetorPrincipal[i] == NULL){ checkAllNull++; }
+        else{
+            pos = preencherVetor(vetorAux, i, pos);
+        }
+    }
+
+    if(checkAllNull == 10){ return TODAS_ESTRUTURAS_AUXILIARES_VAZIAS; }
+    return SUCESSO;
 }
 
 /*
@@ -297,9 +313,19 @@ Rertono (int)
 */
 int getDadosOrdenadosDeTodasEstruturasAuxiliares(int vetorAux[])
 {
+    int checkAllNull = 0, pos = 0;
 
-    int retorno = 0;
-    return retorno;
+    for(int i = 0; i < 10; i++){
+        if(vetorPrincipal[i] == NULL){ checkAllNull++; }
+        else{
+            pos = preencherVetor(vetorAux, i, pos);
+        }
+    }
+
+    if(checkAllNull == 10){ return TODAS_ESTRUTURAS_AUXILIARES_VAZIAS; }
+
+    ordenarVetor(vetorAux, pos);
+    return SUCESSO;
 }
 
 /*
