@@ -252,12 +252,15 @@ int getDadosEstruturaAuxiliar(int posicao, int vetorAux[])
 }
 
 void ordenarVetor(int vet[], int tamanho){
-    int tam = tamanho-1;
-    while (tam > 0 && vet[tam] < vet[tam-1]) {
-            int aux = vet[tam];
-            vet[tam] = vet[tam-1];
-            vet[tam-1] = aux;
-            tam -= 1;
+    for (int step = 1; step < tamanho; step++) {
+        int key = vet[step];
+        int j = step - 1;
+
+        while (j >=0 && key < vet[j]) {
+        vet[j + 1] = vet[j];
+        --j;
+        }
+        vet[j + 1] = key;
     }
 }
 
@@ -272,7 +275,7 @@ Rertono (int)
 */
 int getDadosOrdenadosEstruturaAuxiliar(int posicao, int vetorAux[])
 {
-    int v = getDadosEstruturaAuxiliar(posicao, vetorAux, 0); 
+    int v = getDadosEstruturaAuxiliar(posicao, vetorAux); 
     if(v != SUCESSO){ return v; }
 
     ordenarVetor(vetorAux, vetorPrincipal[posicao-1]->qntEl);
@@ -293,9 +296,9 @@ int getDadosDeTodasEstruturasAuxiliares(int vetorAux[])
     int checkAllNull = 0, pos = 0;
 
     for(int i = 0; i < 10; i++){
-        if(vetorPrincipal[i] == NULL){ checkAllNull++; }
-        else{
-            pos = preencherVetor(vetorAux, i, pos);
+        if(vetorPrincipal[i] == NULL || vetorPrincipal[i]->qntEl == 0){ checkAllNull++;} 
+        else {
+            pos = preencherVetor(vetorAux, i+1, pos);            
         }
     }
 
@@ -316,9 +319,9 @@ int getDadosOrdenadosDeTodasEstruturasAuxiliares(int vetorAux[])
     int checkAllNull = 0, pos = 0;
 
     for(int i = 0; i < 10; i++){
-        if(vetorPrincipal[i] == NULL){ checkAllNull++; }
+        if(vetorPrincipal[i] == NULL || vetorPrincipal[i]->qntEl == 0){ checkAllNull++; }
         else{
-            pos = preencherVetor(vetorAux, i, pos);
+            pos = preencherVetor(vetorAux, i+1, pos);
         }
     }
 
@@ -341,9 +344,14 @@ Rertono (int)
 */
 int modificarTamanhoEstruturaAuxiliar(int posicao, int novoTamanho)
 {
+    int v = validacao(posicao);
+    if(v != SUCESSO){ return v; }
 
-    int retorno = 0;
-    return retorno;
+    if(vetorPrincipal[posicao-1]->size + novoTamanho < 1){ return NOVO_TAMANHO_INVALIDO; }
+
+    vetorPrincipal[posicao-1]->size += novoTamanho;
+    if(novoTamanho < 0){ vetorPrincipal[posicao-1]->qntEl += novoTamanho; }
+    return SUCESSO;
 }
 
 /*
@@ -357,10 +365,11 @@ Retorno (int)
 */
 int getQuantidadeElementosEstruturaAuxiliar(int posicao)
 {
-
-    int retorno = 0;
-
-    return retorno;
+    int v = validacao(posicao);
+    if(v != SUCESSO){ return v; }
+    if(vetorPrincipal[posicao-1]->qntEl == 0){ return ESTRUTURA_AUXILIAR_VAZIA; }
+    int p = vetorPrincipal[posicao-1]->qntEl;
+    return vetorPrincipal[posicao-1]->qntEl;
 }
 
 /*
@@ -437,6 +446,8 @@ int main()
     testeExcluir();
     testeExcluirNumeroEspecifico();
     testeListar();
+    testeRetornarTodosNumeros();
+    testeMudarTamanhoEstrutura();
 }
 
 void testeInserirSemNada()
