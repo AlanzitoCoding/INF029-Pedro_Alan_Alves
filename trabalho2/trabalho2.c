@@ -350,7 +350,13 @@ int modificarTamanhoEstruturaAuxiliar(int posicao, int novoTamanho)
     if(vetorPrincipal[posicao-1]->size + novoTamanho < 1){ return NOVO_TAMANHO_INVALIDO; }
 
     vetorPrincipal[posicao-1]->size += novoTamanho;
-    if(novoTamanho < 0){ vetorPrincipal[posicao-1]->qntEl += novoTamanho; }
+    if(novoTamanho < 0){ 
+        vetorPrincipal[posicao-1]->qntEl += novoTamanho;
+
+        for(int i = -novoTamanho; i > 0; i--){
+            vetorPrincipal[posicao-1]->fim = vetorPrincipal[posicao-1]->fim->ant;
+        }
+    }
     return SUCESSO;
 }
 
@@ -381,8 +387,31 @@ Retorno (No*)
 */
 No *montarListaEncadeadaComCabecote()
 {
+    No * l = malloc(sizeof(No));
+    l->prox = l ->ant = NULL;
+    int checkAllNull = 0, pos = 0;
 
-    return NULL;
+    for(int i = 0; i < 10; i++){
+        if(vetorPrincipal[i] == NULL || vetorPrincipal[i]->qntEl == 0){ checkAllNull++;} 
+        else {
+            No * n = vetorPrincipal[i]->inicio;
+            No * posL = l, *guide = l->prox;
+
+            while(guide != NULL){
+                posL = guide;
+                guide = guide->prox;
+            }
+
+            while(n != NULL){
+                posL->prox = n;
+                posL = posL->prox;
+                n = n->prox;
+            }           
+        }
+    }
+
+    if(checkAllNull == 10){ return NULL; }
+    return l;
 }
 
 /*
@@ -391,6 +420,11 @@ Retorno void
 */
 void getDadosListaEncadeadaComCabecote(No *inicio, int vetorAux[])
 {
+    No * aux = inicio->prox;
+
+    for(int i = 0; aux != NULL; aux = aux->prox, i++){
+        vetorAux[i] = aux->conteudo;
+    }
 }
 
 /*
@@ -402,6 +436,16 @@ Retorno
 */
 void destruirListaEncadeadaComCabecote(No **inicio)
 {
+    No * i = *inicio;
+    No * n = i->prox;
+
+    while(n != NULL){
+        No * aux = n;
+        n = n->prox;
+        free(aux);
+    }
+
+    *inicio = NULL;
 }
 
 /*
@@ -448,6 +492,7 @@ int main()
     testeListar();
     testeRetornarTodosNumeros();
     testeMudarTamanhoEstrutura();
+    testeListaEncadeada();
 }
 
 void testeInserirSemNada()
