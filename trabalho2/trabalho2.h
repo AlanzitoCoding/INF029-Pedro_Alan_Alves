@@ -12,13 +12,7 @@ enum { TODAS_ESTRUTURAS_AUXILIARES_VAZIAS = -11, NOVO_TAMANHO_INVALIDO, NUMERO_I
 typedef struct reg {
     int conteudo;
     struct reg *prox;
-    struct reg *ant;
 } No;
-
-typedef struct lista {
-    int size; int qntEl;
-    No *inicio, *fim;
-} Lista;
 
 int criarEstruturaAuxiliar(int posicao, int tamanho);
 int inserirNumeroEmEstrutura(int posicao, int valor);

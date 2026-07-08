@@ -6,13 +6,18 @@
 
 #include "trabalho2.h"
 
+typedef struct lista {
+    int size; int qntEl;
+    No *inicio, *fim;
+} Lista;
+
 Lista * vetorPrincipal[TAM];
 
 No * criar_no(int num){
     No * n = malloc(sizeof(No));
 
     n->conteudo = num;
-    n->prox = n->ant = NULL;
+    n->prox = NULL;
 
     return n;
 }
@@ -78,7 +83,6 @@ void inserir_no_lista(Lista * l, int valor){
     }
     else{
         l->fim->prox = n;
-        n->ant = l->fim;
         l->fim = n;
     }
 
@@ -108,14 +112,18 @@ int inserirNumeroEmEstrutura(int posicao, int valor)
 }
 
 void excluir_valor_final(Lista * l){
-    No * n = l->fim;
+    No * n = l->fim, *p = l->inicio;
 
-    l->fim = n->ant;
+    while(p != n && p->prox != n){
+        p = p->prox;
+    }
+
+    l->fim = p;
     if(n == l->inicio){
         l->inicio = NULL;
     }
     else{
-        n->ant->prox = NULL;
+        p->prox = NULL;
     }
     l->qntEl--;
     free(n);
@@ -156,9 +164,13 @@ No * buscar_no_valor(No * n, int valor){
 }
 
 int excluir_valor_especifico(Lista * l, int valor){
-    No * n = buscar_no_valor(l->inicio, valor);
+    No * n = buscar_no_valor(l->inicio, valor), *p = l->inicio;
 
     if(n == NULL){ return NUMERO_INEXISTENTE; }
+
+    while(p != n && p->prox != n){
+        p = p->prox;
+    }
 
     if(n == l->inicio){
         l->inicio = n->prox;
@@ -166,16 +178,12 @@ int excluir_valor_especifico(Lista * l, int valor){
         if(n == l->fim){
             l->fim = NULL;
         }
-        else{
-            n->prox->ant = NULL;
-        }
     }
     else if(n == l->fim){
         excluir_valor_final(l);
     }
     else{
-        n->ant->prox = n->prox;
-        n->prox->ant = n->ant;
+        p->prox = n->prox;
     }
     free(n);
     l->qntEl--;
@@ -353,9 +361,11 @@ int modificarTamanhoEstruturaAuxiliar(int posicao, int novoTamanho)
     if(novoTamanho < 0){ 
         vetorPrincipal[posicao-1]->qntEl += novoTamanho;
 
-        for(int i = -novoTamanho; i > 0; i--){
-            vetorPrincipal[posicao-1]->fim = vetorPrincipal[posicao-1]->fim->ant;
+        No * n = vetorPrincipal[posicao-1]->inicio;
+        for(int i = 1; i < vetorPrincipal[posicao-1]->qntEl; i++){
+            n = n->prox;
         }
+        vetorPrincipal[posicao-1]->fim = n;
     }
     return SUCESSO;
 }
@@ -388,7 +398,7 @@ Retorno (No*)
 No *montarListaEncadeadaComCabecote()
 {
     No * l = malloc(sizeof(No));
-    l->prox = l ->ant = NULL;
+    l->prox = NULL;
     int checkAllNull = 0, pos = 0;
 
     for(int i = 0; i < 10; i++){
